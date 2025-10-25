@@ -1,5 +1,9 @@
 import 'package:dio/dio.dart';
 
+
+// final cocktailsApiProvider = Provider<CocktailsApiClient>((ref) {
+//   return CocktailsApiClient();
+// });
 /// Main API client for Solvro Cocktails API
 class CocktailsApiClient {
   final Dio _dio;
@@ -70,7 +74,7 @@ class CocktailsApiClient {
   // COCKTAILS ENDPOINTS
 
   /// Fetch paginated list of cocktails with optional filtering and sorting
-  Future<CocktailsResponse> getCocktails({
+  Future<Map> getCocktails({
     int? id,
     List<int>? ids,
     int? idFrom,
@@ -108,25 +112,25 @@ class CocktailsApiClient {
     if (perPage != null) queryParams['perPage'] = perPage;
 
     final response = await _dio.get('/cocktails', queryParameters: queryParams);
-    return CocktailsResponse.fromJson(response.data);
+    return response.data;
   }
 
   /// Fetch a single cocktail by ID with ingredients
-  Future<CocktailDetail> getCocktail(int id) async {
+  Future<Map> getCocktail(int id) async {
     final response = await _dio.get('/cocktails/$id');
-    return CocktailDetail.fromJson(response.data['data']);
+    return response.data;
   }
 
   /// Fetch list of cocktail glasses
-  Future<List<String>> getCocktailGlasses() async {
+  Future<Map> getCocktailGlasses() async {
     final response = await _dio.get('/cocktails/glasses');
-    return List<String>.from(response.data['data']);
+    return response.data;
   }
 
   /// Fetch list of cocktail categories
-  Future<List<String>> getCocktailCategories() async {
+  Future<Map> getCocktailCategories() async {
     final response = await _dio.get('/cocktails/categories');
-    return List<String>.from(response.data['data']);
+    return response.data;
   }
 }
 

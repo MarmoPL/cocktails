@@ -1,34 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'Search.dart';
 import 'api.dart';
+import 'ImageCard.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import 'package:hive/hive.dart';
 
 void main() {
-
   runApp(const ProviderScope(child: MyApp()));
 }
 
-final cocktailsApiProvider = Provider<CocktailsApiClient>((ref) {
-  return CocktailsApiClient();
-});
+var fav = Hive.box('favourites');
+Set selectedMode = {"Discover"};
+// final cocktailsApiProvider = Provider<CocktailsApiClient>((ref) {
+//   return CocktailsApiClient();
+// });
 
-final cocktailsProvider = FutureProvider<List<Cocktail>>((ref) async {
-  final api = ref.watch(cocktailsApiProvider);
-  final response = await api.getCocktails();
-  return response.data;
+var cocktailsAPI = CocktailsApiClient();
+
+
+final cocktailsProvider = FutureProvider<Map>((ref) async {
+  print("tryb "+selectedMode.toString());
+  if (selectedMode.contains("Favourite")) {
+    print("favourites");
+    List<int> favourites = fav.get("ids");
+    final response = await cocktailsAPI.getCocktails(ids: favourites, perPage: 300);
+    return response;
+  } else {
+    print("discover");
+    final response = await cocktailsAPI.getCocktails(perPage: 300);
+    return response;
+  }
 });
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-
-
   @override
   Widget build(BuildContext context) {
+    // final PageController _pageController = PageController();
 
     return MaterialApp(
       title: 'Cocktails',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple, brightness: Brightness.dark),
         useMaterial3: true,
       ),
       home: Home(),
@@ -44,41 +60,157 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home> {
+  SearchController controllerS = SearchController();
+
+  String? _query;
+
+  late Iterable<Widget> _lastOptions = <Widget>[];
+
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // _pagingController.dispose();
+    super.dispose();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
-    final cocktailsAsync = ref.watch(cocktailsProvider);
+
+    AsyncValue<Map> cocktails = ref.watch(cocktailsProvider);
 
     return Scaffold(
-      body: Stack(
-        children: [
-          Center(
-            child: cocktailsAsync.when(
-              loading: () => const CircularProgressIndicator(),
-              error: (error, stackTrace) => Text(error.toString()),
-              data: (cocktails) => ListView.builder(
-                itemCount: cocktails.length,
-                itemBuilder: (context, index) {
-                  final cocktail = cocktails[index];
-                  return ListTile(
-                    title: Text(cocktail.name),
-                    subtitle: Text(cocktail.category ?? 'No category'),);
-                }
-              )
-            )
-          ),
-        ],
+      body: cocktails.when(
+        loading: () => Skeletonizer(
+          enabled: true,
+            child: MasonryGridView.count(
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 20,
+          mainAxisSpacing: 2,
+          crossAxisSpacing: 20,
+          crossAxisCount: 2,
+          itemBuilder: (context, index) {
+            return ImageCard(
+              data: {},
+              title: "Loading...",
+              imageUrl: "example",
+            );
+          },
+
+        ),),
+        error: (err, stack) => Center(child: Text("Something went wrong")),
+        data: (config) {
+          return MasonryGridView.count(
+            itemCount: config["data"].length,
+            mainAxisSpacing: 2,
+            crossAxisSpacing: 1,
+            crossAxisCount: 2,
+            itemBuilder: (context, index) {
+                return ImageCard(
+                  data: config["data"][index],
+                  title: config["data"][index]["name"],
+                  imageUrl: config["data"][index]["imageUrl"],
+                );
+            },
+
+          );
+        }
+
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {}, child: Icon(Icons.search)),
+      floatingActionButton: cocktails.when(
+        loading: () => Container(),
+        error: (err, stack) => Container(),
+        data: (config) => SearchAnchor(
+            builder: (context, controllerS) {
+              return FloatingActionButton(onPressed: () {
+                controllerS.openView();
+              }, child: Icon(Icons.search));
+            },
+            searchController: controllerS,
+            suggestionsBuilder: (context, controllerS) async {
+              _query = controllerS.text;
+              final Map options = (await cocktailsAPI.getCocktails(
+                  name: "%${_query!}%"));
+              if (_query != controllerS.text) {
+                return _lastOptions;
+              }
+
+              _lastOptions = List<ListTile>.generate(options["data"].length, (index) {
+                return ListTile(title: Text(options["data"][index]["name"]));
+              });
+
+              return _lastOptions;
+            }
+        ),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         child: Row(
           children: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.favorite_border_outlined)),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.water_drop)),
+            SegmentedButton(
+                showSelectedIcon: false,
+                segments: [
+                  const ButtonSegment(value: "Discover", label: Icon(Icons.travel_explore_outlined)),
+                  const ButtonSegment(value: "Favourite", label: Icon(Icons.favorite_outline))
+                ],
+                selected: selectedMode,
+                onSelectionChanged: (value) {
+                  setState(() {
+                    selectedMode = value;
+                    print(selectedMode);
+                  });
+                  var test = ref.invalidate(cocktailsProvider);
+                }
+
+            ),
+            Spacer(),
+            IconButton(onPressed: () {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return BottomSheetFilter(mode: "category");
+                  }
+              );
+            }, icon: const Icon(Icons.category)),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.local_drink)),
+            IconButton(onPressed: () {}, icon: const Icon(Icons.bubble_chart))
           ],
         ),
       ),
+    );
+  }
+}
+
+
+class BottomSheetFilter extends StatefulWidget {
+  final String mode;
+
+  const BottomSheetFilter({super.key, required this.mode});
+
+  @override
+  State<BottomSheetFilter> createState() => _BottomSheetFilterState();
+}
+
+class _BottomSheetFilterState extends State<BottomSheetFilter> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: FutureBuilder(
+        future: cocktailsAPI.getCocktailCategories(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Text("done");
+          } else {
+            return Text("loading");
+          }
+        }
+      )
     );
   }
 }
