@@ -16,9 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      # Instalacja wybranej wersji Fluttera
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.24.3'
+          channel: 'stable'
 
       - run: flutter pub get
       - run: flutter analyze
@@ -32,9 +34,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      # Instalacja wybranej wersji Fluttera
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.24.3'
+          channel: 'stable'
 
       - run: flutter pub get
       - run: flutter build apk --release
