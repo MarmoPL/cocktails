@@ -1,9 +1,5 @@
 import 'package:dio/dio.dart';
 
-
-// final cocktailsApiProvider = Provider<CocktailsApiClient>((ref) {
-//   return CocktailsApiClient();
-// });
 /// Main API client for Solvro Cocktails API
 class CocktailsApiClient {
   final Dio _dio;
@@ -73,48 +69,79 @@ class CocktailsApiClient {
 
   // COCKTAILS ENDPOINTS
 
-  /// Fetch paginated list of cocktails with optional filtering and sorting
-  Future<Map> getCocktails({
-    int? id,
+  Future<Map<String, dynamic>> getCocktails({
     List<int>? ids,
-    int? idFrom,
-    int? idTo,
-    String? name,
-    String? instructions,
-    bool? alcoholic,
-    String? category,
-    String? glass,
-    String? createdAt,
-    String? updatedAt,
-    String? sort,
-    num? ingredientId,
-    bool? ingredients,
-    int? page,
     int? perPage,
+    String? name,
   }) async {
+    print('========== getCocktails DEBUG START ==========');
+    print('Input parameters:');
+    print('  - ids: $ids');
+    print('  - perPage: $perPage');
+    print('  - name: $name');
+
     final queryParams = <String, dynamic>{};
 
-    if (id != null) queryParams['id'] = id;
-    if (ids != null) queryParams['id[]'] = ids;
-    if (idFrom != null) queryParams['id[from]'] = idFrom;
-    if (idTo != null) queryParams['id[to]'] = idTo;
-    if (name != null) queryParams['name'] = name;
-    if (instructions != null) queryParams['instructions'] = instructions;
-    if (alcoholic != null) queryParams['alcoholic'] = alcoholic;
-    if (category != null) queryParams['category'] = category;
-    if (glass != null) queryParams['glass'] = glass;
-    if (createdAt != null) queryParams['createdAt'] = createdAt;
-    if (updatedAt != null) queryParams['updatedAt'] = updatedAt;
-    if (sort != null) queryParams['sort'] = sort;
-    if (ingredientId != null) queryParams['ingredientId'] = ingredientId;
-    if (ingredients != null) queryParams['ingredients'] = ingredients;
-    if (page != null) queryParams['page'] = page;
-    if (perPage != null) queryParams['perPage'] = perPage;
+    if (ids != null && ids.isNotEmpty) {
+      queryParams['id[]'] = ids;
+      print('Added ids to queryParams: ${queryParams['id[]']}');
+    }
+    if (name != null) {
+      queryParams['name'] = name;
+      print('Added name to queryParams: ${queryParams['name']}');
+    }
+    if (perPage != null) {
+      queryParams['perPage'] = perPage;
+      print('Added perPage to queryParams: ${queryParams['perPage']}');
+    }
 
-    final response = await _dio.get('/cocktails', queryParameters: queryParams);
-    return response.data;
+    print('\nFinal queryParams: $queryParams');
+    print('QueryParams type: ${queryParams.runtimeType}');
+
+    try {
+      print('\nMaking GET request to: /cocktails');
+      print('With options: ListFormat.multiCompatible');
+
+      final response = await _dio.get(
+        '/cocktails',
+        queryParameters: queryParams,
+        options: Options(
+          listFormat: ListFormat.multiCompatible,
+        ),
+      );
+
+      print('\n✅ Request successful!');
+      print('Status code: ${response.statusCode}');
+      print('Status message: ${response.statusMessage}');
+      print('Response headers: ${response.headers}');
+      print('Response data type: ${response.data.runtimeType}');
+      print('Response data: ${response.data}');
+      print('========== getCocktails DEBUG END ==========\n');
+
+      return response.data as Map<String, dynamic>;
+
+    } on DioException catch (e) {
+      print('\n❌ DioException occurred!');
+      print('Type: ${e.type}');
+      print('Message: ${e.message}');
+      print('Status code: ${e.response?.statusCode}');
+      print('Response data: ${e.response?.data}');
+      print('Request URL: ${e.requestOptions.uri}');
+      print('Request headers: ${e.requestOptions.headers}');
+      print('Request query parameters: ${e.requestOptions.queryParameters}');
+      print('Stack trace: ${e.stackTrace}');
+      print('========== getCocktails DEBUG END ==========\n');
+      rethrow;
+
+    } catch (e, stackTrace) {
+      print('\n❌ Unexpected error occurred!');
+      print('Error: $e');
+      print('Error type: ${e.runtimeType}');
+      print('Stack trace: $stackTrace');
+      print('========== getCocktails DEBUG END ==========\n');
+      rethrow;
+    }
   }
-
   /// Fetch a single cocktail by ID with ingredients
   Future<Map> getCocktail(int id) async {
     final response = await _dio.get('/cocktails/$id');

@@ -6,30 +6,45 @@ import 'api.dart';
 import 'ImageCard.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
+  var favTest = await Hive.openBox('favourites');
+  if (!favTest.containsKey("ids")) {
+    favTest.put("ids", []);
+  }
   runApp(const ProviderScope(child: MyApp()));
 }
 
-var fav = Hive.box('favourites');
-Set selectedMode = {"Discover"};
+// var fav = Hive.box('favourites');
+// Set selectedMode = {"Discover"};
 // final cocktailsApiProvider = Provider<CocktailsApiClient>((ref) {
 //   return CocktailsApiClient();
 // });
+
+Set selectedMode = {"Discover"};
 
 var cocktailsAPI = CocktailsApiClient();
 
 
 final cocktailsProvider = FutureProvider<Map>((ref) async {
+  var fav = await Hive.openBox('favourites');
   print("tryb "+selectedMode.toString());
   if (selectedMode.contains("Favourite")) {
     print("favourites");
-    List<int> favourites = fav.get("ids");
-    final response = await cocktailsAPI.getCocktails(ids: favourites, perPage: 300);
+    var favourites = await fav.get("ids");
+    final List<int>? ids = favourites != null
+        ? List<int>.from(favourites)
+        : null;
+    print(favourites.runtimeType);
+    var response = await cocktailsAPI.getCocktails(ids: ids, perPage: 300);
+    print(response);
     return response;
   } else {
     print("discover");
-    final response = await cocktailsAPI.getCocktails(perPage: 300);
+    var response = await cocktailsAPI.getCocktails(perPage: 300);
+    print("DONE");
     return response;
   }
 });

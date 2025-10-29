@@ -1,9 +1,10 @@
 import 'package:cocktails/main.dart';
 import 'package:flutter/material.dart';
-// import 'package:hive/hive.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 // var fav = Hive.box("favourites");
-List<int> favList = fav.get("ids");
+// List<int> favList = fav.get("ids");
 // List<int> favList = [123];
 
 class CocktailDetails extends StatefulWidget {
@@ -39,17 +40,20 @@ class _CocktailDetailsState extends State<CocktailDetails> {
                     ),),
                   ),
                   Spacer(),
-                  IconButton(
-                    icon: favList.contains(widget.data["id"]) ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
-                    onPressed: () {
-                      favList = fav.get("fav");
-                      favList.add(widget.data["id"]);
-                      fav.put("fav", favList);
-                      setState(() {
+                  ValueListenableBuilder(
+                      valueListenable: Hive.box('favourites').listenable(),
+                      builder: (context, box, widget2) {
+                        return IconButton(
+                          icon: Icon(box.get("ids").contains(widget.data["id"]) ? Icons.favorite : Icons.favorite_border),
+                          onPressed: () {
+                            var favList = box.get("ids");
+                            favList.contains(widget.data["id"]) ? favList.remove(widget.data["id"]) : favList.add(widget.data["id"]);
+                            box.put("ids", favList);
+                          }
 
-                      });
-                    },
-                  ),
+                        );
+                      }
+                  )
                 ],
               ),
               FutureBuilder(

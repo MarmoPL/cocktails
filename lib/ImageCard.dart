@@ -1,6 +1,10 @@
 import 'package:cocktails/Cocktail.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'package:hive_flutter/hive_flutter.dart';
+
+var box = Hive.box('favourites');
+
 
 class ImageCard extends StatelessWidget {
   final String imageUrl;
