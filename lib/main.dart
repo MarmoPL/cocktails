@@ -84,11 +84,15 @@ class _HomeState extends ConsumerState<Home> {
 
   @override
   void initState() {
+    // Add a listener to rebuild the widget when favourites change.
+    Hive.box('favourites').listenable().addListener(_onFavouritesChanged);
     super.initState();
   }
 
   @override
   void dispose() {
+    // Clean up the listener when the widget is disposed.
+    Hive.box('favourites').listenable().removeListener(_onFavouritesChanged);
     // _pagingController.dispose();
     super.dispose();
   }
@@ -97,6 +101,9 @@ class _HomeState extends ConsumerState<Home> {
 
   @override
   Widget build(BuildContext context) {
+    // By listening here, the widget will rebuild when the box changes.
+    final favouritesBox = Hive.box('favourites');
+    final List<dynamic> favouriteIds = favouritesBox.get('ids', defaultValue: []);
 
     AsyncValue<Map> cocktails = ref.watch(cocktailsProvider);
 
@@ -172,7 +179,7 @@ class _HomeState extends ConsumerState<Home> {
                 showSelectedIcon: false,
                 segments: [
                   const ButtonSegment(value: "Discover", label: Icon(Icons.travel_explore_outlined)),
-                  const ButtonSegment(value: "Favourite", label: Icon(Icons.favorite_outline))
+                  ButtonSegment(value: "Favourite", label: Icon(Icons.favorite_outline), enabled: favouriteIds.isNotEmpty)
                 ],
                 selected: selectedMode,
                 onSelectionChanged: (value) {
@@ -199,6 +206,11 @@ class _HomeState extends ConsumerState<Home> {
         ),
       ),
     );
+  }
+
+  void _onFavouritesChanged() {
+    // This will trigger a rebuild of the widget.
+    setState(() {});
   }
 }
 
