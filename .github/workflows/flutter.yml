@@ -2,11 +2,10 @@ name: Flutter Android Build
 
 on:
   push:
-    branches:
-      - main
+    branches: [ '**' ]
   pull_request:
-    branches:
-      - main
+    branches: [ '**' ]
+  workflow_dispatch: 
 
 jobs:
   build_android:
