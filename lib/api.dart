@@ -18,7 +18,7 @@ class CocktailsApiClient {
   // INGREDIENTS ENDPOINTS
 
   /// Fetch paginated list of ingredients with optional filtering and sorting
-  Future<IngredientsResponse> getIngredients({
+  Future<Map> getIngredients({
     int? id,
     List<int>? ids,
     int? idFrom,
@@ -52,16 +52,14 @@ class CocktailsApiClient {
     if (perPage != null) queryParams['perPage'] = perPage;
 
     final response = await _dio.get('/ingredients', queryParameters: queryParams);
-    return IngredientsResponse.fromJson(response.data);
+    return response.data as Map;
   }
 
-  /// Fetch a single ingredient by ID
   Future<Ingredient> getIngredient(int id) async {
     final response = await _dio.get('/ingredients/$id');
     return Ingredient.fromJson(response.data['data']);
   }
 
-  /// Fetch list of ingredient types
   Future<List<String>> getIngredientTypes() async {
     final response = await _dio.get('/ingredients/types');
     return List<String>.from(response.data['data']);
@@ -73,34 +71,33 @@ class CocktailsApiClient {
     List<int>? ids,
     int? perPage,
     String? name,
+    List<int>? ingredientId,
+    String? glass
   }) async {
-    print('========== getCocktails DEBUG START ==========');
-    print('Input parameters:');
-    print('  - ids: $ids');
-    print('  - perPage: $perPage');
-    print('  - name: $name');
-
     final queryParams = <String, dynamic>{};
 
     if (ids != null && ids.isNotEmpty) {
       queryParams['id[]'] = ids;
-      print('Added ids to queryParams: ${queryParams['id[]']}');
     }
+
+    if (glass != null) {
+      queryParams['glass'] = glass;
+    }
+
+    queryParams['ingredients'] = 1;
+
+
+    if (ingredientId != null && ingredientId.isNotEmpty) {
+      queryParams['ingredientId[]'] = ingredientId;
+    }
+
     if (name != null) {
       queryParams['name'] = name;
-      print('Added name to queryParams: ${queryParams['name']}');
     }
     if (perPage != null) {
       queryParams['perPage'] = perPage;
-      print('Added perPage to queryParams: ${queryParams['perPage']}');
     }
-
-    print('\nFinal queryParams: $queryParams');
-    print('QueryParams type: ${queryParams.runtimeType}');
-
     try {
-      print('\nMaking GET request to: /cocktails');
-      print('With options: ListFormat.multiCompatible');
 
       final response = await _dio.get(
         '/cocktails',
@@ -109,39 +106,18 @@ class CocktailsApiClient {
           listFormat: ListFormat.multiCompatible,
         ),
       );
-
-      print('\n✅ Request successful!');
-      print('Status code: ${response.statusCode}');
-      print('Status message: ${response.statusMessage}');
-      print('Response headers: ${response.headers}');
-      print('Response data type: ${response.data.runtimeType}');
-      print('Response data: ${response.data}');
-      print('========== getCocktails DEBUG END ==========\n');
-
       return response.data as Map<String, dynamic>;
 
     } on DioException catch (e) {
-      print('\n❌ DioException occurred!');
-      print('Type: ${e.type}');
-      print('Message: ${e.message}');
-      print('Status code: ${e.response?.statusCode}');
-      print('Response data: ${e.response?.data}');
-      print('Request URL: ${e.requestOptions.uri}');
-      print('Request headers: ${e.requestOptions.headers}');
-      print('Request query parameters: ${e.requestOptions.queryParameters}');
-      print('Stack trace: ${e.stackTrace}');
-      print('========== getCocktails DEBUG END ==========\n');
+      print('Error: $e');
       rethrow;
 
     } catch (e, stackTrace) {
-      print('\n❌ Unexpected error occurred!');
       print('Error: $e');
-      print('Error type: ${e.runtimeType}');
-      print('Stack trace: $stackTrace');
-      print('========== getCocktails DEBUG END ==========\n');
       rethrow;
     }
   }
+
   /// Fetch a single cocktail by ID with ingredients
   Future<Map> getCocktail(int id) async {
     final response = await _dio.get('/cocktails/$id');

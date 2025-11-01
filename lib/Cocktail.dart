@@ -2,6 +2,9 @@ import 'package:cocktails/main.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+import 'Data/ingridients_list.dart';
 
 // var fav = Hive.box("favourites");
 // List<int> favList = fav.get("ids");
@@ -28,7 +31,7 @@ class _CocktailDetailsState extends State<CocktailDetails> {
             children: [
               Hero(
                 tag: widget.data["id"],
-                child: Image.network(widget.data["imageUrl"]),
+                child: CachedNetworkImage(imageUrl: widget.data["imageUrl"]),
               ),
               Row(
                 children: [
@@ -57,7 +60,7 @@ class _CocktailDetailsState extends State<CocktailDetails> {
                 ],
               ),
               FutureBuilder(
-                future: cocktailsAPI.getCocktail(widget.data["id"]),
+                future: cocktailRepository.getCocktail(widget.data["id"]),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     var result = snapshot.data as Map;
@@ -105,19 +108,34 @@ class _CocktailDetailsState extends State<CocktailDetails> {
                             itemBuilder: (context, index) {
                               return ListTile(
                                 leading: CircleAvatar(
-                                  child: Text("${index + 1}"),
+                                  child: Icon(ingredientIcons['${result['data']['ingredients'][index]['type']}']),
                                 ),
-                                title: Text(result['data']['ingredients'][index]['name']),
-                                trailing: result['data']['ingredients'][index]['alcohol'] ? result['data']['ingredients'][index]['percentage']==null ? Text("Unknown") : Text(result['data']['ingredients'][index]['percentage'].toString()) : Text(""),
+                                title: Row(
+                                  children: [
+                                    Text(result['data']['ingredients'][index]['name']),
+                                    SizedBox(width: 5,),
+                                    Text(result['data']['ingredients'][index]['measure'] ?? "", style: TextStyle(fontSize: 10, color: Colors.grey)),
+                                  ],
+                                ),
+                                trailing: result['data']['ingredients'][index]['alcohol'] ? result['data']['ingredients'][index]['percentage']==null ? Text("Unknown") : Text(result['data']['ingredients'][index]['percentage'].toString()+"%") : Text(""),
                               );
 
                             }
+                          ),
+                          Divider(),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Recipe", style: TextStyle(fontSize: 20),),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(result['data']['instructions']),
                           ),
                         ],
                       ),
                     );
                   } else {
-                    return CircularProgressIndicator();
+                    return Center(child: CircularProgressIndicator());
                   }
                 },
               ),

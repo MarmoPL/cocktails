@@ -1,15 +1,20 @@
+import 'package:cocktails/creator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'Search.dart';
+import 'Cocktail.dart';
 import 'api.dart';
 import 'ImageCard.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'cache.dart';
+
 
 void main() async {
   await Hive.initFlutter();
+  WidgetsFlutterBinding.ensureInitialized();
+  await cocktailRepository.init();
+
   var favTest = await Hive.openBox('favourites');
   if (!favTest.containsKey("ids")) {
     favTest.put("ids", []);
@@ -17,34 +22,29 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-// var fav = Hive.box('favourites');
-// Set selectedMode = {"Discover"};
-// final cocktailsApiProvider = Provider<CocktailsApiClient>((ref) {
-//   return CocktailsApiClient();
-// });
-
 Set selectedMode = {"Discover"};
 
+var cocktailRepository = CocktailRepository(CocktailsApiClient());
 var cocktailsAPI = CocktailsApiClient();
 
 
 final cocktailsProvider = FutureProvider<Map>((ref) async {
   var fav = await Hive.openBox('favourites');
-  print("tryb "+selectedMode.toString());
+  //print("tryb "+selectedMode.toString());
   if (selectedMode.contains("Favourite")) {
-    print("favourites");
+    //print("favourites");
     var favourites = await fav.get("ids");
     final List<int>? ids = favourites != null
         ? List<int>.from(favourites)
         : null;
-    print(favourites.runtimeType);
-    var response = await cocktailsAPI.getCocktails(ids: ids, perPage: 300);
-    print(response);
+    //print(favourites.runtimeType);
+    var response = await cocktailRepository.getCocktails(ids: ids, perPage: 300);
+    //print(response);
     return response;
   } else {
-    print("discover");
-    var response = await cocktailsAPI.getCocktails(perPage: 300);
-    print("DONE");
+    //print("discover");
+    var response = await cocktailRepository.getCocktails(perPage: 300);
+    //print("DONE");
     return response;
   }
 });
@@ -84,16 +84,13 @@ class _HomeState extends ConsumerState<Home> {
 
   @override
   void initState() {
-    // Add a listener to rebuild the widget when favourites change.
     Hive.box('favourites').listenable().addListener(_onFavouritesChanged);
     super.initState();
   }
 
   @override
   void dispose() {
-    // Clean up the listener when the widget is disposed.
     Hive.box('favourites').listenable().removeListener(_onFavouritesChanged);
-    // _pagingController.dispose();
     super.dispose();
   }
 
@@ -101,13 +98,19 @@ class _HomeState extends ConsumerState<Home> {
 
   @override
   Widget build(BuildContext context) {
-    // By listening here, the widget will rebuild when the box changes.
     final favouritesBox = Hive.box('favourites');
     final List<dynamic> favouriteIds = favouritesBox.get('ids', defaultValue: []);
 
     AsyncValue<Map> cocktails = ref.watch(cocktailsProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0,
+        backgroundColor: Colors.transparent,
+        forceMaterialTransparency: true,
+        elevation: 0,
+
+      ),
       body: cocktails.when(
         loading: () => Skeletonizer(
           enabled: true,
@@ -128,19 +131,52 @@ class _HomeState extends ConsumerState<Home> {
         ),),
         error: (err, stack) => Center(child: Text("Something went wrong")),
         data: (config) {
-          return MasonryGridView.count(
-            itemCount: config["data"].length,
-            mainAxisSpacing: 2,
-            crossAxisSpacing: 1,
-            crossAxisCount: 2,
-            itemBuilder: (context, index) {
-                return ImageCard(
-                  data: config["data"][index],
-                  title: config["data"][index]["name"],
-                  imageUrl: config["data"][index]["imageUrl"],
-                );
-            },
+          return CustomScrollView(
 
+            slivers: [
+              SliverToBoxAdapter(
+                child: Card(
+                  child: Column(
+                    children: [
+                      Text("Don't know what to drink?"),
+                      Text("Choose what you want, and we will create the perfect cocktail for You."),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Creator(),
+                              ),
+                            );
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.auto_awesome),
+                              SizedBox(width: 5),
+                              Text("Create now!")
+                            ],
+                          )
+                      )
+                    ],
+                  )
+                )
+              ),
+              SliverMasonryGrid.count(
+                childCount: config["data"].length,
+                mainAxisSpacing: 2,
+                crossAxisSpacing: 1,
+                crossAxisCount: 2,
+                itemBuilder: (context, index) {
+                    return ImageCard(
+                      data: config["data"][index],
+                      title: config["data"][index]["name"],
+                      imageUrl: config["data"][index]["imageUrl"],
+                    );
+                },
+
+              ),
+            ],
           );
         }
 
@@ -164,7 +200,17 @@ class _HomeState extends ConsumerState<Home> {
               }
 
               _lastOptions = List<ListTile>.generate(options["data"].length, (index) {
-                return ListTile(title: Text(options["data"][index]["name"]));
+                return ListTile(
+                    title: Text(options["data"][index]["name"]),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CocktailDetails(data: options["data"][index]),
+                        ),
+                      );
+                    },
+                );
               });
 
               return _lastOptions;
@@ -209,7 +255,6 @@ class _HomeState extends ConsumerState<Home> {
   }
 
   void _onFavouritesChanged() {
-    // This will trigger a rebuild of the widget.
     setState(() {});
   }
 }

@@ -2,6 +2,10 @@ import 'package:cocktails/Cocktail.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:nil/nil.dart';
+
+
 
 var box = Hive.box('favourites');
 
@@ -39,18 +43,17 @@ class ImageCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         clipBehavior: Clip.antiAlias,
-        child: Container(
+        child: SizedBox(
           height: height,
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // Background Image
               imageUrl != "example" ? Hero(
                 tag: data['id'],
-                child: Image.network(
-                  imageUrl,
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
+                  errorWidget: (context, error, stackTrace) {
                     return Container(
                       color: Colors.grey[300],
                       child: Icon(
@@ -60,23 +63,14 @@ class ImageCard extends StatelessWidget {
                       ),
                     );
                   },
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Container(
-                      // color: Colors.grey[200],
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
-                              : null,
-                        ),
+                  placeholder: (context, child, ) {
+                    return Center(
+                      child: CircularProgressIndicator(
                       ),
                     );
                   },
                 ),
               ) : Container(),
-              // Bottom gradient and blur for title
               Positioned(
                 bottom: 0,
                 left: 0,
@@ -96,28 +90,36 @@ class ImageCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      child: Hero(
-                        tag: data['id'].toString()+"name",
-                        child: Text(
-                          title,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            shadows: [
-                              Shadow(
-                                offset: Offset(0, 1),
-                                blurRadius: 3,
-                                color: Colors.black.withOpacity(0.5),
-                              ),
-                            ],
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              offset: Offset(0, 1),
+                              blurRadius: 3,
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ],
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
+                ),
+              ),
+              Positioned(
+                top: 5,
+                right: 5,
+                child: ValueListenableBuilder(
+                    valueListenable: Hive.box('favourites').listenable(),
+                    builder: (context, Box box, widget) {
+                      return box.get("ids").contains(data["id"]) ?
+                        Icon(Icons.favorite) : const SizedBox.shrink();
+                    }
                 ),
               ),
             ],
