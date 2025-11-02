@@ -87,7 +87,7 @@ class _CocktailDetailsState extends State<CocktailDetails> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(
-                                            "Alco? ",
+                                            "Alcoholic? ",
                                             style: TextStyle(fontSize: 12),
                                           ),
                                           Text(

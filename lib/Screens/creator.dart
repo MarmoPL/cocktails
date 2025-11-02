@@ -255,7 +255,7 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
         bottom: TabBar(
           controller: _tabController,
           tabs: [
-            Tab(text: "Ingridients"),
+            Tab(text: "Ingredients"),
             Tab(text: "Glass")
           ],
         )

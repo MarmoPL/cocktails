@@ -376,7 +376,7 @@ class _MixerState extends State<Mixer> {
             const SizedBox(width: 8),
             Flexible(
               child: Text(
-                "Thinking about, what to drink this friday...",
+                "Thinking about what to drink this Friday...",
               ),
             ),
             SizedBox(width: 10),

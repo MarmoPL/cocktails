@@ -12,8 +12,8 @@ class NotFound extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.crisis_alert_sharp),
-          Text('It looks like you cannot make any drink with these ingredients'),
-          Text('Try again with other ones')
+          Text('No cocktails can be made with these ingredients'),
+          Text('Try again with different ones')
         ],
       ),
     );
