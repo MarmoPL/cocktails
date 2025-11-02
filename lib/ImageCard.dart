@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:nil/nil.dart';
+import 'main.dart';
 
 
 
@@ -30,6 +30,9 @@ class ImageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        var stat = Hive.box('stats').get('opened', defaultValue: 0);
+        stat = stat + 1;
+        Hive.box('stats').put('opened', stat);
         Navigator.push(
           context,
           MaterialPageRoute(

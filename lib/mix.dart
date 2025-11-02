@@ -320,7 +320,6 @@ class _MixerState extends State<Mixer> {
               Flexible(
                 child: Text(
                   "Searching for best matches",
-                  style: const TextStyle(color: Colors.white),
                 ),
               ),
               SizedBox(width: 10),
@@ -340,7 +339,6 @@ class _MixerState extends State<Mixer> {
             Flexible(
               child: Text(
                 "Considering multiple combinations",
-                style: const TextStyle(color: Colors.white),
               ),
             ),
             SizedBox(width: 10),
@@ -360,7 +358,6 @@ class _MixerState extends State<Mixer> {
             Flexible(
               child: Text(
                 "Selecting the best one",
-                style: const TextStyle(color: Colors.white),
               ),
             ),
             SizedBox(width: 10),
@@ -380,7 +377,6 @@ class _MixerState extends State<Mixer> {
             Flexible(
               child: Text(
                 "Thinking about, what to drink this friday...",
-                style: const TextStyle(color: Colors.white),
               ),
             ),
             SizedBox(width: 10),
@@ -392,7 +388,7 @@ class _MixerState extends State<Mixer> {
 
     // Animate all of the info items in the list:
     progress = progress
-        .animate(interval: 2500.ms)
+        .animate(interval: 1500.ms)
         .fadeIn(duration: 900.ms, delay: 300.ms)
         .shimmer(blendMode: BlendMode.srcOver, color: Colors.white12)
         .move(begin: const Offset(-16, 0), curve: Curves.easeOutQuad);
@@ -414,14 +410,20 @@ class _MixerState extends State<Mixer> {
               future: createCocktails(widget.selectedIngredients, widget.selectedGlass),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-    // Future.delayed(Duration(seconds: 3));
-    // Navigator.push(context, MaterialPageRoute(builder: (context) => Mixed(
-    // results: snapshot.data as Map),));
-    // Navigator.removeRouteBelow(context, ModalRoute.of(context)!);
-
-                return Text("test");
+                    Future.delayed(const Duration(seconds: 9), () {
+                    if (context.mounted) {
+                    // Use pushReplacement to replace Mix screen with Mixed screen
+                    // This ensures back gesture goes to Creator, not Mix
+                    Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                    builder: (context) => Mixed(results: snapshot.data as Map)
+                    )
+                    );
+                    }});
+                return const SizedBox.shrink();
                 } else {
-                  return Text("tak");
+                  return const SizedBox.shrink();
                 }
               }
           )
