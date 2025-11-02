@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'Widgets/Mixed/Match.dart';
-import 'Widgets/Mixed/NotFound.dart';
-import 'main.dart';
+import '../Widgets/Mixed/Match.dart';
+import '../Widgets/Mixed/NotFound.dart';
+import '../main.dart';
 
 String getIngredientName(Map data, int id) {
   String name = "";

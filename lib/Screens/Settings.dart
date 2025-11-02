@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'API/ThemeProvider.dart';
+import '../API/ThemeProvider.dart';
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
@@ -27,7 +27,6 @@ class SettingsPage extends ConsumerWidget {
           ),
           SizedBox(height: 12),
 
-          // Theme Switch Card
           ListTile(
             contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             leading: Container(
@@ -66,7 +65,6 @@ class SettingsPage extends ConsumerWidget {
 
           SizedBox(height: 40),
 
-          // Developer Info Section
           Text(
             "About",
             style: TextStyle(
@@ -142,19 +140,19 @@ class SettingsPage extends ConsumerWidget {
                 _InfoRow(
                   icon: Icons.code,
                   label: "Developed by",
-                  value: "MarmoPL", // Change this
+                  value: "MarmoPL",
                 ),
                 SizedBox(height: 12),
                 _InfoRow(
                   icon: Icons.email_outlined,
                   label: "Contact",
-                  value: "marcin@czembrowski.pl", // Change this
+                  value: "marcin@czembrowski.pl",
                 ),
                 SizedBox(height: 12),
                 _InfoRow(
                   icon: Icons.calendar_today,
                   label: "Released",
-                  value: "2025", // Change this
+                  value: "2025",
                 ),
                 SizedBox(height: 12),
                 _InfoRow(
@@ -166,19 +164,6 @@ class SettingsPage extends ConsumerWidget {
             ),
           ),
 
-          SizedBox(height: 20),
-
-          // Footer text
-          Center(
-            child: Text(
-              "Made with 💜 for cocktail lovers",
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-          ),
 
         ],
       ),

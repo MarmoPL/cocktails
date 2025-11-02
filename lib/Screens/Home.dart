@@ -1,15 +1,15 @@
-import 'package:cocktails/Profile.dart';
-import 'package:cocktails/Settings.dart';
+import 'package:cocktails/Screens/Profile.dart';
+import 'package:cocktails/Screens/Settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:cocktails/main.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'ImageCard.dart';
+import '../Widgets/ImageCard.dart';
 import 'package:cocktails/Widgets/Home/CreatorPrompt.dart';
 import 'Cocktail.dart';
-import 'package:cocktails/creator.dart';
+import 'package:cocktails/Screens/creator.dart';
 
 Set selectedMode = {"Discover"};
 

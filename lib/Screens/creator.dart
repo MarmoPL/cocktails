@@ -1,5 +1,5 @@
 import 'package:cocktails/main.dart';
-import 'package:cocktails/mix.dart';
+import 'package:cocktails/Screens/mix.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 

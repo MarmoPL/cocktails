@@ -1,9 +1,9 @@
-import 'package:cocktails/Cocktail.dart';
+import 'package:cocktails/Screens/Cocktail.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'main.dart';
+import '../main.dart';
 
 
 

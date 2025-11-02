@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'API/api.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'API/cache.dart';
-import 'Home.dart';
+import 'Screens/Home.dart';
 import 'API/ThemeProvider.dart';
 
 
