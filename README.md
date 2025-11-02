@@ -6,7 +6,7 @@ A beautiful, feature-rich Flutter application for discovering, creating, and man
 [![Dart](https://img.shields.io/badge/Dart-3.9.2+-0175C2?logo=dart)](https://dart.dev)
 
 ## Information
-**This was partially made by AI, just to speed up the process :)**
+**This README was partially made by AI, just to speed up the process :)**
 
 ## Features
 
