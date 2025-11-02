@@ -69,8 +69,6 @@ class _HomeState extends ConsumerState<Home> {
 
   void _onScroll() {
     final currentScroll = _scrollController.position.pixels;
-
-    // Show app bar when scrolling down and past 100 pixels
     if (currentScroll > 100 && currentScroll > _lastScrollPosition) {
       if (!_showAppBar) {
         setState(() {
@@ -78,7 +76,6 @@ class _HomeState extends ConsumerState<Home> {
         });
       }
     }
-    // Hide app bar when scrolling up or at the top
     else if (currentScroll < _lastScrollPosition || currentScroll < 50) {
       if (_showAppBar) {
         setState(() {
@@ -106,7 +103,6 @@ class _HomeState extends ConsumerState<Home> {
       ),
       body: Stack(
         children: [
-          // Main content
           cocktails.when(
             loading: () => Skeletonizer(
               enabled: true,
@@ -125,16 +121,15 @@ class _HomeState extends ConsumerState<Home> {
                 },
               ),
             ),
-            error: (err, stack) => Center(child: Text("Something went wrong")),
+            error: (err, stack) => const Center(child: Text("Something went wrong")),
             data: (config) {
               return CustomScrollView(
                 controller: _scrollController,
                 slivers: [
-                  // Add padding at top for the hidden app bar space
-                  SliverToBoxAdapter(
+                  const SliverToBoxAdapter(
                     child: SizedBox(height: 16),
                   ),
-                  Creatorprompt(),
+                  const Creatorprompt(),
                   SliverMasonryGrid.count(
                     childCount: config["data"].length,
                     mainAxisSpacing: 2,
@@ -155,7 +150,7 @@ class _HomeState extends ConsumerState<Home> {
 
           // Animated collapsible app bar
           AnimatedPositioned(
-            duration: Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
             top: _showAppBar ? 0 : -100,
             left: 0,
@@ -167,20 +162,20 @@ class _HomeState extends ConsumerState<Home> {
                   end: Alignment.bottomCenter,
                   colors: [
                     Theme.of(context).scaffoldBackgroundColor,
-                    Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
-                    Theme.of(context).scaffoldBackgroundColor.withOpacity(0.0),
+                    Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.95),
+                    Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.0),
                   ],
                 ),
               ),
               child: SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       // App title/logo
-                      Text(
+                      const Text(
                         "Cocktails",
                         style: TextStyle(
                           fontSize: 24,
@@ -188,17 +183,15 @@ class _HomeState extends ConsumerState<Home> {
                         ),
                       ),
 
-                      // Right side buttons
                       Row(
                         children: [
-                          // Settings button
                           Container(
                             decoration: BoxDecoration(
-                              color: Colors.deepPurple.withOpacity(0.1),
+                              color: Colors.deepPurple.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.settings_outlined),
+                              icon: const Icon(Icons.settings_outlined),
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -209,9 +202,8 @@ class _HomeState extends ConsumerState<Home> {
                               },
                             ),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
 
-                          // Profile button
                           Container(
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
@@ -223,7 +215,7 @@ class _HomeState extends ConsumerState<Home> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: IconButton(
-                              icon: Icon(Icons.person_outline, color: Colors.white),
+                              icon: const Icon(Icons.person_outline, color: Colors.white),
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -253,7 +245,7 @@ class _HomeState extends ConsumerState<Home> {
               onPressed: () {
                 controllerS.openView();
               },
-              child: Icon(Icons.search),
+              child: const Icon(Icons.search),
             );
           },
           searchController: controllerS,
@@ -306,10 +298,9 @@ class _HomeState extends ConsumerState<Home> {
                 setState(() {
                   selectedMode = value;
                 });
-                var test = ref.invalidate(cocktailsProvider);
               },
             ),
-            Spacer(),
+            const Spacer(),
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -319,7 +310,7 @@ class _HomeState extends ConsumerState<Home> {
                   ),
                 );
               },
-              child: Row(
+              child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.auto_awesome),

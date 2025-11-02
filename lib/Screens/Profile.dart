@@ -8,7 +8,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile"),
+        title: const Text("Profile"),
         centerTitle: true,
       ),
       body: ValueListenableBuilder(
@@ -22,19 +22,17 @@ class ProfilePage extends StatelessWidget {
           final favouritesCount = favouritesList.length;
 
           return SingleChildScrollView(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                Text(
+                const Text(
                   "Your Statistics",
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 20),
-
-                // Stats Grid
+                const SizedBox(height: 20),
                 Row(
                   children: [
                     Expanded(
@@ -45,7 +43,7 @@ class ProfilePage extends StatelessWidget {
                         value: favouritesCount.toString(),
                       ),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: _StatCard(
                         icon: Icons.visibility,
@@ -57,7 +55,7 @@ class ProfilePage extends StatelessWidget {
                   ],
                 ),
 
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 _StatCard(
                   icon: Icons.auto_awesome,
@@ -92,7 +90,7 @@ class _StatCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: isDark ? Colors.grey[850] : Colors.grey[100],
         borderRadius: BorderRadius.circular(16),
@@ -104,9 +102,9 @@ class _StatCard extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.1),
+              color: iconColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -115,18 +113,18 @@ class _StatCard extends StatelessWidget {
               size: 32,
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(
             value,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 13,
               color: Colors.grey,
             ),

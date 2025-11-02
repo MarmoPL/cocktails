@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cocktails/Screens/Cocktail.dart';
 import 'package:flutter/material.dart';
@@ -51,10 +49,10 @@ class Match extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  Icon(Icons.auto_awesome),
-                  SizedBox(width: 5,),
-                  Text("Best Match"),
-                  Spacer(),
+                  const Icon(Icons.auto_awesome),
+                  const SizedBox(width: 5),
+                  const Text("Best Match"),
+                  const Spacer(),
                   Text("Score ${score.round()}")
                 ]
               ),
@@ -80,17 +78,17 @@ class Match extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: !best ? EdgeInsets.all(8.0) : EdgeInsets.all(0),
-                          child: Text(best ? match['cocktail']['name'] : match['name'], style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+                          padding: !best ? const EdgeInsets.all(8.0) : const EdgeInsets.all(0),
+                          child: Text(best ? match['cocktail']['name'] : match['name'], style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
                         ),
-                        best ? Text("We think this is the best choice for you 🍾", style: TextStyle(fontSize: 15)) : Container(),
+                        best ? const Text("We think this is the best choice for you 🍾", style: TextStyle(fontSize: 15)) : Container(),
                         TextButton(onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => CocktailDetails(data: best ? match['cocktail'] : match)),
                           );
                         },
-                        child: Text("See Details"),
+                        child: const Text("See Details"),
                         )
                       ],
                     ),

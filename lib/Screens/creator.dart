@@ -44,7 +44,7 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -55,7 +55,7 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
           expand: false,
           builder: (context, scrollController) {
             return Container(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -69,15 +69,15 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
-                  Text(
+                  const SizedBox(height: 20),
+                  const Text(
                     "Selected Items",
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Expanded(
                     child: ListView(
                       controller: scrollController,
@@ -86,13 +86,13 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
                         if (_selectedIngredients.isNotEmpty) ...[
                           Text(
                             "Ingredients (${_selectedIngredients.length})",
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.blue,
                             ),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Wrap(
                             spacing: 8.0,
                             runSpacing: 8.0,
@@ -103,7 +103,7 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
                               );
                               return Chip(
                                 label: Text(ingredient['name']),
-                                deleteIcon: Icon(Icons.close, size: 18),
+                                deleteIcon: const Icon(Icons.close, size: 18),
                                 onDeleted: () {
                                   setState(() {
                                     _selectedIngredients.remove(id);
@@ -114,27 +114,27 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
                               );
                             }).toList(),
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                         ],
 
                         // Glasses Section
                         if (_selectedGlass.isNotEmpty) ...[
                           Text(
                             "Glasses (${_selectedGlass.length})",
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.green,
                             ),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Wrap(
                             spacing: 8.0,
                             runSpacing: 8.0,
                             children: _selectedGlass.map((glass) {
                               return Chip(
                                 label: Text(glass),
-                                deleteIcon: Icon(Icons.close, size: 18),
+                                deleteIcon: const Icon(Icons.close, size: 18),
                                 onDeleted: () {
                                   setState(() {
                                     _selectedGlass.remove(glass);
@@ -149,7 +149,7 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
 
                         // Empty state
                         if (_selectedIngredients.isEmpty && _selectedGlass.isEmpty)
-                          Center(
+                          const Center(
                             child: Padding(
                               padding: EdgeInsets.all(40),
                               child: Column(
@@ -170,7 +170,7 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
                       ],
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Row(
                     children: [
                       Expanded(
@@ -179,15 +179,15 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
                             Navigator.pop(context);
                           },
                           style: OutlinedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 16),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: Text("Cancel"),
+                          child: const Text("Cancel"),
                         ),
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Expanded(
                         flex: 2,
                         child: ElevatedButton.icon(
@@ -208,10 +208,10 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
                               ),
                             );
                           },
-                          icon: Icon(Icons.auto_awesome),
-                          label: Text("Continue to Mix"),
+                          icon: const Icon(Icons.auto_awesome),
+                          label: const Text("Continue to Mix"),
                           style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 16),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -245,7 +245,7 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
         icon: const Icon(Icons.auto_awesome),
       ),
       appBar: AppBar(
-        title: Column(
+        title: const Column(
           children: [
             Text("Creator"),
             Text("Select ingredients and glasses", style: TextStyle(fontSize: 12))
@@ -254,7 +254,7 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
         centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
-          tabs: [
+          tabs: const [
             Tab(text: "Ingredients"),
             Tab(text: "Glass")
           ],
@@ -279,12 +279,12 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
                     child: Column(
                       children: [
                         Padding(
-                          padding: EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(16),
                           child: TextField(
                             controller: searchController,
                             decoration: InputDecoration(
                               hintText: 'Search...',
-                              prefixIcon: Icon(Icons.search),
+                              prefixIcon: const Icon(Icons.search),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -293,7 +293,7 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
                           ),
                         ),
                         ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: filteredItems.length,
                           itemBuilder: (context, index) {
@@ -311,13 +311,13 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
                             );
                     
                           }
-                    
+
                         ),
                       ],
                     ),
                   );
                 } else {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
               }
           ),
@@ -346,7 +346,7 @@ class _CreatorState extends State<Creator> with SingleTickerProviderStateMixin  
 
                   );
                 } else {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
               }
           ),

@@ -24,7 +24,7 @@ class _CocktailDetailsState extends State<CocktailDetails> {
   Widget build(BuildContext context) {
 
     SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(
+        const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.light,
           statusBarBrightness: Brightness.dark,
@@ -53,14 +53,14 @@ class _CocktailDetailsState extends State<CocktailDetails> {
                         left: 0,
                         right: 0,
                         child: Container(
-                          padding: EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
                               colors: [
-                                Colors.black.withOpacity(0.8),
-                                Colors.black.withOpacity(0.6),
+                                Colors.black.withValues(alpha: 0.8),
+                                Colors.black.withValues(alpha: 0.6),
                                 Colors.transparent,
                               ],
                             ),
@@ -75,18 +75,18 @@ class _CocktailDetailsState extends State<CocktailDetails> {
                                   runSpacing: 0,
                                   children: [
                                     Chip(
-                                      avatar: Icon(Icons.category, size: 18),
+                                      avatar: const Icon(Icons.category, size: 18),
                                       label: Text(
                                         result['data']['category'],
-                                        style: TextStyle(fontSize: 12),
+                                        style: const TextStyle(fontSize: 12),
                                       ),
                                     ),
                                     Chip(
-                                      avatar: Icon(Icons.bubble_chart, size: 18),
+                                      avatar: const Icon(Icons.bubble_chart, size: 18),
                                       label: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Text(
+                                          const Text(
                                             "Alcoholic? ",
                                             style: TextStyle(fontSize: 12),
                                           ),
@@ -105,7 +105,7 @@ class _CocktailDetailsState extends State<CocktailDetails> {
                                   ],
                                 );
                               } else {
-                                return SizedBox.shrink();
+                                return const SizedBox.shrink();
                               }
                             },
                           ),
@@ -117,12 +117,12 @@ class _CocktailDetailsState extends State<CocktailDetails> {
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
                     child: Row(
                       children: [
-                        SizedBox(width: 48), // Space for alignment
+                        const SizedBox(width: 48),
                         Expanded(
                           child: Text(
                             widget.data["name"],
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
                             ),
@@ -157,15 +157,15 @@ class _CocktailDetailsState extends State<CocktailDetails> {
                         var result = snapshot.data as Map;
                         return Center(
                           child: Chip(
-                            avatar: Icon(Icons.local_drink, size: 18),
+                            avatar: const Icon(Icons.local_drink, size: 18),
                             label: Text(
                               result['data']['glass'],
-                              style: TextStyle(fontSize: 12),
+                              style: const TextStyle(fontSize: 12),
                             ),
                           ),
                         );
                       } else {
-                        return SizedBox.shrink();
+                        return const SizedBox.shrink();
                       }
                     },
                   ),
@@ -179,19 +179,19 @@ class _CocktailDetailsState extends State<CocktailDetails> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Divider(),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-                                child: Text("Ingredients", style: TextStyle(fontSize: 20),),
+                              const Divider(),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 8.0, left: 8.0),
+                                child: Text("Ingredients", style: TextStyle(fontSize: 20)),
                               ),
                               ListView.builder(
-                                  padding: EdgeInsets.zero,
+                                  padding: const EdgeInsets.all(0),
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: result['data']['ingredients'].length,
                                 itemBuilder: (context, index) {
                                   return ListTile(
-                                    contentPadding: EdgeInsets.symmetric(
+                                    contentPadding: const EdgeInsets.symmetric(
                                       horizontal: 8.0,
                                       vertical: 4.0,
                                     ),
@@ -199,14 +199,14 @@ class _CocktailDetailsState extends State<CocktailDetails> {
                                       child: Icon(ingredientIcons['${result['data']['ingredients'][index]['type']}']),
                                     ),
                                     title:
-                                        Text(result['data']['ingredients'][index]['name'], style: TextStyle(
+                                        Text(result['data']['ingredients'][index]['name'], style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w600,
-                                        ),),
+                                        )),
                                     subtitle: result['data']['ingredients'][index]['measure'] != null
                                         ? Text(
                                       result['data']['ingredients'][index]['measure'],
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 15,
                                         color: Colors.grey,
                                       ),
@@ -217,7 +217,7 @@ class _CocktailDetailsState extends State<CocktailDetails> {
                                       result['data']['ingredients'][index]['percentage'] == null
                                           ? "Unknown"
                                           : "${result['data']['ingredients'][index]['percentage']}%",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -227,21 +227,21 @@ class _CocktailDetailsState extends State<CocktailDetails> {
 
                                 }
                               ),
-                              Divider(),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text("Recipe", style: TextStyle(fontSize: 20),),
+                              const Divider(),
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text("Recipe", style: TextStyle(fontSize: 20)),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 8.0),
                                 child: Text(result['data']['instructions']),
                               ),
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
                             ],
                           ),
                         );
                       } else {
-                        return Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       }
                     },
                   ),
@@ -256,7 +256,7 @@ class _CocktailDetailsState extends State<CocktailDetails> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.black.withOpacity(0.6),
+                  Colors.black.withValues(alpha: 0.6),
                   Colors.transparent,
                 ],
               ),
@@ -267,15 +267,15 @@ class _CocktailDetailsState extends State<CocktailDetails> {
               padding: const EdgeInsets.all(12.0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
                 child: IconButton(
-                  icon: Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                  icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),

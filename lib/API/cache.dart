@@ -58,7 +58,6 @@ class CocktailRepository {
     final cacheKey = 'cocktail_$id';
 
     if (_cocktailDetailsCache.containsKey(cacheKey)) {
-      print('getting from cache');
       final cached = _cocktailDetailsCache.get(cacheKey);
       return Map<String, dynamic>.from(cached as Map);
     }
