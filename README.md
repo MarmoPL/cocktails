@@ -29,6 +29,7 @@ A beautiful, feature-rich Flutter application for discovering, creating, and man
 ### 🎨 User Experience
 - **Dark/Light Theme**: Toggle between dark and light modes with persistent preference
 - **Material Design 3**: Modern, clean interface following Google's latest design standards
+- **Adaptive App Icon**: Dynamic, Material You themed app icon that adapts to your device's color scheme
 - **Profile Statistics**: Track your app usage with favorites count, viewed cocktails, and creator uses
 - **Offline-first Architecture**: Cached data ensures functionality even with limited connectivity (but its pretty limited)
 
